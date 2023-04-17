@@ -11,7 +11,7 @@ package person.pluto.natcross2;
 public final class CommonConstants {
 
 	// 服务端地址，支持IP或域名，这个根据服务端放的网络位置进行设置
-	public static final String serviceIp = "127.0.0.1";
+	public static final String serviceIp = "lab.ourtbds.com";
 	// 客户端服务的端口
 	public static final int servicePort = 10010;
 

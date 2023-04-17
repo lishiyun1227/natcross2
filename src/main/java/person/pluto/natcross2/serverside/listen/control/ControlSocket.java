@@ -128,7 +128,7 @@ public class ControlSocket implements IControlSocket, Runnable {
 			try {
 				InteractiveModel interactiveModel = socketChannel.read();
 
-				log.info("监听线程 [{}] 接收到控制端口发来的消息：[ {} ]", this.formatServerListenInfo(), interactiveModel);
+				// log.info("监听线程 [{}] 接收到控制端口发来的消息：[ {} ]", this.formatServerListenInfo(), interactiveModel);
 
 				boolean proc = false;
 				for (IRecvHandler<? super InteractiveModel, ? extends InteractiveModel> handler : this.recvHandlerList) {
@@ -148,7 +148,7 @@ public class ControlSocket implements IControlSocket, Runnable {
 				}
 
 			} catch (Exception e) {
-				log.error("读取或写入异常", e);
+				log.error("读取或写入异常：{} {}", e.getMessage(), socketChannel.getSocket());
 				if (e instanceof IOException || !this.isValid()) {
 					this.close();
 				}

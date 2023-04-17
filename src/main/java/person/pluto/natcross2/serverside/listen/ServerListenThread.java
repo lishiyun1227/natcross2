@@ -24,6 +24,8 @@ import person.pluto.natcross2.serverside.listen.clear.IClearInvalidSocketPartThr
 import person.pluto.natcross2.serverside.listen.config.IListenServerConfig;
 import person.pluto.natcross2.serverside.listen.control.IControlSocket;
 import person.pluto.natcross2.utils.Assert;
+import person.pluto.tbds.IPUtil;
+import person.pluto.tbds.IpInfo;
 
 /**
  * <p>
@@ -95,6 +97,17 @@ public final class ServerListenThread implements Runnable, INioProcesser, IBelon
 	 * @param listenSocket
 	 */
 	private void procMethod(Socket listenSocket) {
+		String addr = listenSocket.getInetAddress().getHostAddress();
+		IpInfo info = IPUtil.search(addr);
+		if(!IPUtil.isValid(info)) {
+			log.error("badman {}:{}, {}", addr, listenSocket.getLocalPort(), info.getAddress());
+			try {
+				listenSocket.close();
+			} catch (Exception e) {
+			}
+			return;
+		}
+		log.info("accept {}:{}, {}{}", addr, listenSocket.getLocalPort(), info.getCity(), info.getIsp());
 		NatcrossExecutor.executeServerListenAccept(() -> {
 			// 如果没有控制接收socket，则取消接入，不主动关闭所有接口，防止controlSocket临时掉线，讲道理没有controlSocket也不会启动
 			if (Objects.isNull(this.controlSocket)) {
@@ -294,7 +307,7 @@ public final class ServerListenThread implements Runnable, INioProcesser, IBelon
 	 * @since 2019-08-21 12:50:57
 	 */
 	public void clearInvaildSocketPart() {
-		log.debug("clearInvaildSocketPart[{}]", this.getListenPort());
+		// log.debug("clearInvaildSocketPart[{}]", this.getListenPort());
 
 		ConcurrentHashMap<String, AbsSocketPart> socketPartMap = this.socketPartMap;
 
